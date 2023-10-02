@@ -13,7 +13,7 @@ An hypotesis is chosen from an hypotesis space. But how do we determine the best
 In general prior knowledge about the problem is used, or we can also do exploratory data analysis.
 If the previous methods fail to choose a good hypotesis space multiple hypotesis spaces are tested and evaluated and the best is choosen.
 
-## Consisten hypotesis
+## Consistent hypotesis
 
 Taking into account only the supervised learning problems, for which we know the value of $h(x)$, we can define `consistency` as:
 
@@ -91,15 +91,18 @@ As discussed in the [list then eliminate algorithm](#the-list-then-eliminate-alg
 So in general is not guaranteed that there's a singular hypotesis, this can cause indetermination to happen, for the same reason.
 So in general we make a choice and decide a particular ipothesis and we call this process `search bias`.
 
-## Accuracy of an hypotesis
+## Making evaluations
 
-Evaluating the accuracy of an hypotesis is fundamental to machine learning, simply because in manyn cases it helps us to undertand wheter to use the hypotesis or not.
+### Accuracy of an hypotesis
+
+Evaluating the accuracy of an hypotesis is fundamental to machine learning, simply because in many cases it helps us to understand wheter to use the hypotesis or not.
 When evaluating an hypotesis we are interested in estimatin ghe accuracy with which will classify new examples.
 Statistical methods in conjunction with assumptions about the underlying distributions of data, allow one to give an evaluation of the perfomances of the hypotesis.
 Estimating the accuracy of an hypotesis is pretty straightforward when data is plentiful.
-However difficulties arises when we have a limited dataset.
+However difficulties arises when we have a limited dataset, in particular as we'll see when we are dealing with a dataset we're implicitly dealing with a random variable.
+This means that we have to deal with probabilities.
 
-## Sample error, true error and accuracy
+### Sample error, true error and accuracy
 
 Before defining and understanding the differences between the two errors, we define the `sample data` $S$ as:
 
@@ -145,7 +148,7 @@ from the statistical theory we can make the following assertions:
 2. With an approximately $95\%$ the true error lies in the interval
     $\qquad errors_S(h)\pm 1.96\sqrt{\frac{error_\mathcal{D}(1-errors_S(h))}{n}}$ -->
 
-## Error estimation
+### Error estimation
 
 How does the deviation (a measure of difference between an observed value and some other value) between the sample error and the true erro depends on the size of the data?  This question is an instance of a  well-studied problem in statistics: the problem of estimating the proportion of a population that exhibits some property, given the observed proportion over some random  sample of the population. In  our  case, the property of interest is that $h$ misclassifies the example.
 The key  to answering this  question is  to  note that  when we measure the sample error we are performing an experiment with  a random outcome. We first collect a random sample $S$ of $n$ independently drawn instances from the distribution $\mathcal{D}$, and then  measure the sample error $errors_S(h)$.
@@ -153,7 +156,7 @@ If we were to repeat this experiment many times we would expect to see different
 Imagine that we run $k$ different experiments and we measure the random variables $error_{S_1}(h)\dots error_{S_k}(h)$ and that we plot the histogram displaying the frequency with which we observe each possible value error. As $k$ grows we such histogram would approach the form of a binomial distriution.
 The binomial distribution models the probability of observing $r$ errors in a data sample containint $n$ randomly and indipendent drawn instances.
 
-## Estimating the true error
+### Estimating the true error
 
 Statisticians calls $error_S(h)$ an estimator for $error_{\mathcal{D}}(h)$, an estimator is any random variable used to estimate some parameter (the probability $p$ of misclassifying any given instance) of ther underlying population from which the sample is drawn.
 An obvious question is to ask yourself whether the estimator (the random variable) gives on average the right estimate (for the parameter we want to determine).
@@ -175,9 +178,15 @@ $ E[error_S(h)] = E[\frac{1}{n}\sum_{x\in{S}}\delta(f(x),h(x))] \\
 Where $E[\delta(f(x_i),h(x_i))] =  (1 * p + 0* (1-p))$ is given by the definition of the expected value, we either misclassify with probability $p$ or we don't misclassify with probability $1-p$.
 This means that, in general, we don't make mistakes aproximating the true error by the sample error.
 This is true only when $S$ and $h$ are choosen independently.
-In order to choose $h$ and $S$ independently what we can assume is that we generate the target function using a sample $S'$ and then we generate anoter sample $S$ such that $S\cap S'= \empty$ and we use $S$ to evaluate the accuracy of $h$ then the condition is met.
+For this example let's call $D$ the full sample space that we have.
+In order to choose $h$ and $S$ independently what we can do is split $D$ in two sets $S$ and $T$ such that $S\cap T= \empty \land T\approx\frac{2}{3}D$ (the value $\frac{2}{3}$ is purely empirical).
+We then use $T$ to generate the target function and $S$ to evaluate the accuracy of $h$.
+A note about the empirical $\frac{2}{3}$.
+If $T$ is big we may improve the performance of the model, but we may lack generalization power.
+If $S$ is too big we decrease variance, and the confidence interval of the estimator is low, however the value of the accuracy might not be satisfactory.
+In general we make a trade off, but it depends on the specific application.
 
-## Confidence Intervals
+### Confidence Intervals
 
 One common way to  describe the uncertainty associated with an estimate is to give an interval within  which the true  value is expected to  fall.
 
@@ -189,3 +198,57 @@ from the statistical theory we can make the following assertions:
 With an approximately $95\%$ the true error lies in the interval
 
 $\qquad errors_S(h)\pm 1.96\sqrt{\frac{error_\mathcal{D}(1-errors_S(h))}{n}}$
+
+## Overfitting
+
+We say that an hypotesis $h\in{H}$ `overfits` the training data if the is there is an alternative hypotesis $h'\in{H}$ `overfits` if:
+
+$\qquad error_S(h) < error_S(h') \land error_{\mathcal{D}}(h) > error_{\mathcal{D}}(h')$
+
+This is a really important problem, because it means that we're paying too much attention to the data that we already know and the hypotesis cannot generalize well.
+
+### Evaluation of a learning algorithm
+
+We're oftern interested in evaluating the performance bewteen two learning algorithms rather than two specific hypotesis.
+Suppose we have two learning algorithms $L_A$ and $L_B$ and we want to determine which is better on average for learning some particular target function $f$.
+A reasonable way to the fine on average is through the expected value, of the difference in their errors:
+
+$\qquad E_{S\sub\mathcal{D}}[error_{\mathcal{D}}(L_A(S)) - error_{\mathcal{D}}(L_B(S))]$
+
+Where $L(S) = h$.
+In practive we have only a small sample set $D$, the approach is to divide it into a training set $T$ and a test set $S$, approzimate the sample error on $S$ with the true error and measure the difference:
+
+$\qquad error_{S}(L_A(T)) - error_{S}(L_B(T))$
+
+One way to improve this estimator is to repetedly partition in different disjoint training and test set and take the mean of these different experiments.
+This procedure of partition multiple times the dataset is called K-fold cross validation.
+
+### Performance metrics in classification
+
+The question is, we're focusing on accuracy, but is it always a good performance metrics?
+The answer is no, because imagine having two hypotesis $h_1$ and $h_2$ and an unbalanced dataset $D$ that contains $90\%$ of positive examples.
+If the hypotesis $h_1$ have an accuracy of $80\%$ and is the result of a classification algorithm and $h_2$ has an accuracy of $90\%$ and is a function that returns the most common value in $D$, it is obvious that $h_2$ has a better accuracy than $h_1$ but this is misleading because ig the number of positive examples drop to $50\%$ the accuracy will also drop.
+In general accuracy is not enough to asses the performance of a classification method.
+We define:
+
+- **True positive/TP** : A positive exampl correctly classified as positive
+- **True negative/TN** : A negative example correctly classified as negative
+- **False positive/FP**: A negative example classified as negative
+- **False negative/FN**: A positive example classified as negative
+
+And the following metrics:
+
+- **Recall**: $\frac{TP}{TP+FN}$
+- **Precision**: $\frac{TP}{TP+FP}$
+
+The impact of false positives (Precision) and the impact of false negatives (Recall) is application dependant.
+Imagine that you're creating an autonomous mobile and you're in charge of making the model that predicts positive and activates a brake system  if there's a pedestrian.
+In this context having a false positive means: The system incorrectly guesses that there's a pedestrian and breaks, this may cause collision with other cars, but if the breaking system is correctly calibrated the risk of anyone gettin hurt should be minimal.
+On the other hand having a false negative means: The system incorrectly guesses there is no pedestrian and doesn't break, causing the death/a severe damage of the pedestrian.
+It's obvious that we want to maximize the recall.
+However is not always straight forward to understand which needs to be maximized.
+So in general we combine precision and recall in something called `f1-score`
+
+$\qquad \text{F1-score}=2\frac{precision* recall}{precision+recall}$.
+
+Lastly we also define something called the `confusion matrix` and is essentially a table containg every class $C_i$ thate we need to classify and computes how many times a class $C_i$ is misclassified as $C_j$, the main diagonal is the accuracy for each class and every cell outside the one in the diagonal counts the number of misclassification made.
