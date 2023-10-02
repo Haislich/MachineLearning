@@ -99,7 +99,7 @@ Statistical methods in conjunction with assumptions about the underlying distrib
 Estimating the accuracy of an hypotesis is pretty straightforward when data is plentiful.
 However difficulties arises when we have a limited dataset.
 
-## Sample error and true error
+## Sample error, true error and accuracy
 
 Before defining and understanding the differences between the two errors, we define the `sample data` $S$ as:
 
@@ -121,5 +121,71 @@ $\qquad error_\mathcal{D} = Pr_{x\in{D}}[f(x)\neq h(x)]$
 
 Where $Pr_{x\in{D}}$ is the probability to take a specific instance $x$ over $\mathcal{D}$.
 This definition of the true error intrinsically assigns less value to misclassification of values that tend to appear less often.
+Lastly we define `accuracy`:
+
+$\qquad accuracy = 1-error(h)$
+
 We usually want to know the true error, because is the error that we would expect when applying the hypotesis to future examples.
 The problem is that we have no way of calculating it, this is because we have no idea on how the [underlying distribution](./Introduction.MD/#underlying-distribution) works, and also since $x$ is randomly drawn from there is no guarantee that $x\in{S}$, and for values outside of $S$ we don't know the value $f(x)$.
+
+All we can measure is the sample error, keeping in mind that an high accuracy over the sample but we have low accuracy over the distribution our system will perform badly (we can correctly guess only what we already know).
+The question is how well can we approximate the sample error to the true error?
+<!-- 
+## Confidence Intervals
+
+For the case in which $h$ is a discrete-valued hypotesis and:
+
+- The samples $S$ contains $n$ samples drawn indipendently from $\mathcal{D}$
+- $n\geq30$
+- $h$ commits $r$ errors over the $n$ examples ($errors_S(h) = \frac{r}{n}$)
+
+from the statistical theory we can make the following assertions:
+
+1. Given no other information the most probable value of $error_\mathcal{D}$ is $errors_S(h)$
+2. With an approximately $95\%$ the true error lies in the interval
+    $\qquad errors_S(h)\pm 1.96\sqrt{\frac{error_\mathcal{D}(1-errors_S(h))}{n}}$ -->
+
+## Error estimation
+
+How does the deviation (a measure of difference between an observed value and some other value) between the sample error and the true erro depends on the size of the data?  This question is an instance of a  well-studied problem in statistics: the problem of estimating the proportion of a population that exhibits some property, given the observed proportion over some random  sample of the population. In  our  case, the property of interest is that $h$ misclassifies the example.
+The key  to answering this  question is  to  note that  when we measure the sample error we are performing an experiment with  a random outcome. We first collect a random sample $S$ of $n$ independently drawn instances from the distribution $\mathcal{D}$, and then  measure the sample error $errors_S(h)$.
+If we were to repeat this experiment many times we would expect to see different values for the various i $error_{s_i}(h)$, where $i$ is the $i$-th experiment,the outcome of such experiment would be called a random variable.
+Imagine that we run $k$ different experiments and we measure the random variables $error_{S_1}(h)\dots error_{S_k}(h)$ and that we plot the histogram displaying the frequency with which we observe each possible value error. As $k$ grows we such histogram would approach the form of a binomial distriution.
+The binomial distribution models the probability of observing $r$ errors in a data sample containint $n$ randomly and indipendent drawn instances.
+
+## Estimating the true error
+
+Statisticians calls $error_S(h)$ an estimator for $error_{\mathcal{D}}(h)$, an estimator is any random variable used to estimate some parameter (the probability $p$ of misclassifying any given instance) of ther underlying population from which the sample is drawn.
+An obvious question is to ask yourself whether the estimator (the random variable) gives on average the right estimate (for the parameter we want to determine).
+To answer this question we define the `estimation bias`, or simply `bias` as:
+
+$\qquad bias = E[error_S(h)]-error_{\mathcal{D}}(h)$
+
+If the bias is $0$ we say that $error_S(h)$ is a good approximation for $error_{\mathcal{D}}(h)$.
+Is $error_S(h)$ an unbiased estimator for $error_{\mathcal{D}}(h)$ ?
+
+Suppose that we have a probability $p$ of misclassyfing an input chosen at random ($error_{\mathcal{D}}(h) = p$).
+
+$ E[error_S(h)] = E[\frac{1}{n}\sum_{x\in{S}}\delta(f(x),h(x))] \\
+  \qquad \qquad \qquad = \frac{1}{n}\sum_{i=1}^{n} E[\delta(f(x_i),h(x_i))] \\
+  \qquad \qquad \qquad = \frac{1}{n} \sum_{i=1}^{n} (1 * p + 0* (1-p)) \\
+  \qquad \qquad \qquad = \frac{1}{n} np\\
+  \qquad \qquad \qquad = p$
+
+Where $E[\delta(f(x_i),h(x_i))] =  (1 * p + 0* (1-p))$ is given by the definition of the expected value, we either misclassify with probability $p$ or we don't misclassify with probability $1-p$.
+This means that, in general, we don't make mistakes aproximating the true error by the sample error.
+This is true only when $S$ and $h$ are choosen independently.
+In order to choose $h$ and $S$ independently what we can assume is that we generate the target function using a sample $S'$ and then we generate anoter sample $S$ such that $S\cap S'= \empty$ and we use $S$ to evaluate the accuracy of $h$ then the condition is met.
+
+## Confidence Intervals
+
+One common way to  describe the uncertainty associated with an estimate is to give an interval within  which the true  value is expected to  fall.
+
+- The samples $S$ contains $n$ samples drawn indipendently from $\mathcal{D}$ and are independent of $h$
+- $n\geq30$
+
+from the statistical theory we can make the following assertions:
+
+With an approximately $95\%$ the true error lies in the interval
+
+$\qquad errors_S(h)\pm 1.96\sqrt{\frac{error_\mathcal{D}(1-errors_S(h))}{n}}$
