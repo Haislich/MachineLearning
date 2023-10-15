@@ -1,6 +1,8 @@
 # Supervised learning
 
-## Hypotesis
+## Introduction
+
+### Hypotesis
 
 As previously discussed we approximated [target function](./Introduction.MD/#target-function) $V$ with a function $\hat{V}$.
 This was necessary because in order to learn $V$ we would need to know all $V(x)$, but we are missing both all possible instances and all possible results, this means that in general we have to settle with an approximation of $V$.
@@ -13,19 +15,19 @@ An hypotesis is chosen from an hypotesis space. But how do we determine the best
 In general prior knowledge about the problem is used, or we can also do exploratory data analysis.
 If the previous methods fail to choose a good hypotesis space multiple hypotesis spaces are tested and evaluated and the best is choosen.
 
-## Consistent hypotesis
+### Consistent hypotesis
 
 Taking into account only the supervised learning problems, for which we know the value of $h(x)$, we can define `consistency` as:
 
 $\text{An hypotesis }h\text{ is consistent with a dataset }D\text{ and target function }V\text{if and only if }h(x) = V(x), \forall{(x,h(x))\in{D}}$
 
-## Version Space
+### Version Space
 
 The version space if the set of all consistent hypotesis with respect to $D$, more formally:
 
 $\text{The version space }VS_{H,D}\text{ with respect to hypotesis space }H\text{ and training examples }D\text{, is the subset of hypotesis taken from }H\text{ consistent with the training examples in }D.$
 
-## The inductive learning hypotesis
+### The inductive learning hypotesis
 
 The goal of machine learning tasks is to find the best hypotesis $h$ such that predicts correct values $h(x')$ for $x'\notin{D}$.
 Even if we want to approximate $V$ as best as we can, the only information that we have is that $V(x)=y\in{D},\forall{(x,y)\in{D}}$.
@@ -34,39 +36,24 @@ Lacking further information we make an assumption about the data.
 
 $\text{Any hypotesis that approximates well over a sufficiently large set of training examples will allso approximate the target function well over the unobserved examples.}$
 
-## Learning as a search
+### Learning as a search
 
 In essence, learning involves search: searching through a space of possible [hypotheses](#hypotesis) to find the hypothesis that best fits the available training examples and other prior constraints or knowledge.
 It is important to note the by selecting an hypotesis representation, the designer of the learning algorithm implicitly defines the space of all hypotheses that the program can ever represent, and therefore can ever learn (a program would never learn anything that it cannot represent).
 Viewing learning as a search problem means that we are particularly interessed in algorithms capable of efficienly search very large (or infinite) hypotesis spaces, in order to find the best fit for the training data.
 
-## Concept learning
+### Concept learning
 
 Generally speaking much of learning involves acquiring general concepts from specific training examples. The problem of automatically inferring the general definition of some concept given examples labeled as members or nonmembers of the concept is called `concept learning`.
 Concept learning is the task of inferring a boolean valued function from training examples of its input and output.
 Every instance of $X$ is a n-dimensional tuple in which $?$ means that every values is acceptable and $\emptyset{}$ means that no values is acceptable.
 
-<!-- ## General to specific ordering of hypotesis
-
-Many algorithms for concept learning organize the [search](#learning-as-a-search) by relying on a very specific structure that exists for any concept learning problem: `general to specific ordering of hypotesis`. We can take advantage of this hypotesis to design learning algorithms that exhaustively search without explictly enumerating every hypotesis.
-Assuming we have two hypotesis $h_1 = <\text{Sunny},?,?,\text{Strong}>$ and $h_2 = <\text{Sunny},?,?,?>$.
-Because $h_2$ imposes fewer constrains on the instance than $h_1$, every instance classified positive byt $h_1$ will also be considered positive by $h_2$.
-We can intuitively see that $h_2$ can be considered as "more general than" $h_1$.
-We can define a `more general than or equal to` relation in terms of the sets of instances that satisfy two hypotesis.
-
-$\text{Let }h_j\text{ and }h_k\text{ be boolean valued functions defined over } X\text{.}\\ \text{Then }h_j\text{ is more general than or equal to }h_k(h_j \ge_g h_k)\text{ if and oly if }\forall{x\in{X}}[(h_k(x)=1) \implies (h_j(x)= 1)]$
-
-We find useful to extend this definition to `stricly more general`($h_j>_gh_k$) if and only if $(h_j \ge_g h_k) \land{} (h_k \ngeq_g h_j)$ and the inverse if we have $h_j \ge_g h_k$ we define $h_k$ as `more general than` $h_j$.
-
-Formally the $\ge_g$ relation defines a partial order for the hypotesis space $H$.
-Being a partial orderin it means that there could be two hypotesis $h_1$ and $h_2$ such that $h_1 \ngeq_g h_2$ and $h_2 \ngeq_g h_1$. -->
-
-## Representation of an hypotesis
+### Representation of an hypotesis
 
 In concept learning we define a representation of an hypotesis as:
 $\text{A representation of an hypotesis }h\text{ is a subset of the input space }X'\subseteq{X}\text{ in which } h(x) = True, \forall{x}\in{X'} $
 
-## The list then eliminate algorithm
+### The list then eliminate algorithm
 
 This algorithm finds all describable hypotesis that are consistent with the observed training examples, it finds the version space for $H$ and $D$. An obvious way to represent the version space is simply to list all of its members.
 The idea behind this algorithm is first initialize the version space to contain all possible hypotesis and then through an iterative process eliminate all hypotesis that are not consistent.
@@ -74,7 +61,13 @@ In general we would like to see only one hypotesis as the output, but if not eno
 This algorithm works perfectly in practice because is guaranteed to output at least one consistent hypotesis.
 It however requires exhaustively enumerating all hypotesis in $H$ and also that the hypotesis space is finite (thus countable). Which is unrealistic for most, if not all, real hypotesis spaces.
 
-## Language bias and search bias
+### Inductive Bias
+
+The inductive bias is the set of assumptions that a machine learning algorithm makes about the relationship between iput variables and output variables.
+In essence the deductive bias is the set of assumptions that, together with the training data, deductively justify the classifications assigned by the learner to future instances.
+It answers the question about hte policy by which ID3 generalizes from observed training examples to classify unseen instances.
+
+### Language bias and search bias
 
 Suppose that we wish to assure that the hypotesis space contains the unknown target concept.
 Suppose also that we use an [hypotesis representation](#representation-of-an-hypotesis) in which each hypotesis is a conjunction of costraints on the instance attributes.
@@ -108,6 +101,13 @@ Before defining and understanding the differences between the two errors, we def
 
 $\text{Sample of }n \text{ instances drawn from }X\text{ according to }\mathcal{D}\text{ for which }f(x)\text{ is known.}$
 
+We oftesn assume implicitly that the elements of $S$ have this properties:
+
+- The samples are identically distributed: the data-generating process is stable.
+- The samples are idependently distribuited: there's no bias in the data collection, each sample is representative of the future and comprehensive of the past.
+
+This two properties are costraints that we implicilty assume valid and stem from [the inductive learning hypotesis](#the-inductive-learning-hypotesis)
+
 We call `sample error` the error rate of the hypotesis over the sample of data available.
 More formally the sample error is:
 
@@ -133,20 +133,6 @@ The problem is that we have no way of calculating it, this is because we have no
 
 All we can measure is the sample error, keeping in mind that an high accuracy over the sample but we have low accuracy over the distribution our system will perform badly (we can correctly guess only what we already know).
 The question is how well can we approximate the sample error to the true error?
-<!-- 
-## Confidence Intervals
-
-For the case in which $h$ is a discrete-valued hypotesis and:
-
-- The samples $S$ contains $n$ samples drawn indipendently from $\mathcal{D}$
-- $n\geq30$
-- $h$ commits $r$ errors over the $n$ examples ($errors_S(h) = \frac{r}{n}$)
-
-from the statistical theory we can make the following assertions:
-
-1. Given no other information the most probable value of $error_\mathcal{D}$ is $errors_S(h)$
-2. With an approximately $95\%$ the true error lies in the interval
-    $\qquad errors_S(h)\pm 1.96\sqrt{\frac{error_\mathcal{D}(1-errors_S(h))}{n}}$ -->
 
 ### Error estimation
 
@@ -199,12 +185,13 @@ With an approximately $95\%$ the true error lies in the interval
 
 $\qquad errors_S(h)\pm 1.96\sqrt{\frac{error_\mathcal{D}(1-errors_S(h))}{n}}$
 
-## Overfitting
+### Overfitting
 
 We say that an hypotesis $h\in{H}$ `overfits` the training data if the is there is an alternative hypotesis $h'\in{H}$ `overfits` if:
 
 $\qquad error_S(h) < error_S(h') \land error_{\mathcal{D}}(h) > error_{\mathcal{D}}(h')$
 
+In other $h$ overfits the data if has a smaller error than $h'$ in the training data but has greater error over the entire distribution of instances.
 This is a really important problem, because it means that we're paying too much attention to the data that we already know and the hypotesis cannot generalize well.
 
 ### Evaluation of a learning algorithm
@@ -252,3 +239,100 @@ So in general we combine precision and recall in something called `f1-score`
 $\qquad \text{F1-score}=2\frac{precision* recall}{precision+recall}$.
 
 Lastly we also define something called the `confusion matrix` and is essentially a table containg every class $C_i$ thate we need to classify and computes how many times a class $C_i$ is misclassified as $C_j$, the main diagonal is the accuracy for each class and every cell outside the one in the diagonal counts the number of misclassification made.
+
+## Decision Trees
+
+Decision Tree learning is a method for approximating discrete-valued target functions, in which the learned function is represented by a decision tree.
+Learned trees can also be re-represented as sets of if-then rules to improve human readability.
+
+### Representation
+
+Decision trees classify  instances by sorting them  down  the  tree  from the root to some leaf node, which provides the classification of the instance. Each node in the tree specifies a test of some attribute of the instance, and each branch descending
+from  that  node corresponds to  one of the  possible values  for this  attribute.
+In general, decision trees  represent  a disjunction of conjunctions of constraints (it can be represented as a set of If-Then statements)on the attribute values of instances.
+
+### ID3
+
+ID3 is the basic algorithm used for the construction of decision trees.
+It learns the decision trees by constructing them  with a top-down approach.
+The first thing it does is to create a root node.
+Once the root is created asks the question "which attribute should be tested?".
+If all instances are have the same value, the algorithm return the node with the correct label.
+If the set of the attributes is empty the algorithm return the node with label the value of the most common instance.
+Else the best attribute is selected (using statistical tecniques), used as test and removed from the set of attributes.
+A descendant is then created for each possible value of this attribute and the training examples are sorted to the appropriate descendant node.
+The entire process is then repeated  using  the  training examples associated with each descendant node to select the  best  attribute to test at that  point  in  the  tree.
+
+The central part of this algorithm is the choice of the best atttribute to test at each node in the tree. We would like to select the attribute that is most useful for classifying examples.
+A measure of usefuleness is given by the `information gain`, it measures how well a given attribute separates the training examples according to their target classification.
+In order to define information gain we need to define another quantity called `entropy` which is a measure of impurity of the collection of examples.
+
+$\qquad Entropy(S) = -p_{+}log_2(p_+)-p_{-}log_2(p_-)$
+
+Where $p_+$ and $p_{-}$ is the probability of being positive and negative respectively.
+Note that the previous definition of entropy only applies to a decision tree that performs binary classification.
+If the entropy is $0$ all members belong to the same class, if the entropy if $1$ there's an equal member of positive and negative examples.
+This idea of entropy can be of course generalized to not to just binary classification, but with multi-class classifictions with a total of $c$ different classes
+
+$\qquad Entropy(S) = \sum_{i=1}^c-p_{i}log_2(p_i)$
+
+Having defined entropy we can define the information gain as the expected reduction in entropy caused by partitioning the examples according to this attribute.
+Given a collection of examples $S$ and an attribute $A$
+
+$\qquad \text{Gain}(S,A) = \text{Entropy}(S) - \sum_{v\in \text{Values(A)}} \frac{|S_v|}{S}\text{Entropy}(S_v)$
+
+Where $Values(A)$ is the set of all possible values for attribute $A$ and $S_v$ is the subset of $S$ for which attribute $A$ has value $v$.
+
+### Hypotesis space search in decision tree learning
+
+ID3 makes a search in the set of possible trees for a tree that fits the data.
+ID3 starts with an empty tree and consider progressively more leaborate hypotesis in search of the correct tree.
+The evaluation function that guides this process is the information gain measure.
+By viewing ID3 in terms of search space we can get some informations about it's capabilities and limitations.
+ID3 hypotesis space is a complete space of finite discrete-valued functions, relative to the available attributes, every finite discrete-valued function can be representd by some decision tree thus we can always create one.
+ID3 maintain a single hypotesis and we don't have to reduce the language's power though a language bias, in turn sticking to a single hypotesis ID3 loses the ability to determine how many alternative decision trees are consistent with the data and resolve optimally the problem.
+It never backtracks, so when an attribute is selected for test at a particular level it never reconsiders it choices, it is thus susceptible to converging to a local minima.
+ID3 uses all training examples at each step to make decisions on how to refine the current hypotesis, this means that is much less sensitive to errors in indivisual training examples.
+ID3 can also be extended to handle noisy data .
+
+### Inductive bias in Decision tree learning
+
+Given a collection of training examples, there are tipically many consistent trees associated with these examples.
+Describing the inductive bias of ID3 consists of describing the basis over which it select an hypotesis over the others.
+ID3 simply prefers short trees that places high information gain attributes near the root.
+This inductive bias follows from ID3 search strategy and thus is called preference bias (or search bias).
+For example however Candidate-Elimination algorithm bias is a restriction bias (language bias), this is because it searches completely an incomplete space, finding each consistent hypotesis with the trining data and the inductive bias is a consequence of the expressive power of its hypotesis representation.
+
+### Issues in Decsion tree learning
+
+The first problem that can arise is overfitting.
+While it's in general a reasonable strategy to grow the tree to perfectly classify the training data, but can [overfit](#overfitting).
+This can happen if for example training examples contains random errors or noise, this can cause ID3 to construct a more complex tree, searching for further refinements to adapt to the noise.
+It can also happen when training data are noise-free and small numbers of examples are associated with leaf nodes.
+In this case is ofter possible that coincidental regularities occur, in which some attribute happens to partition the examples very well, despite being unrelated to the actual target function.
+In general overfitting is associated with the size of the tree, so two solutions are usually used to avoid overfitting.
+The first is to stop growing the tree when the data split is not statistically significant, this approach is called early stopping, howver this approach is dangerous because it stops us from recognizing situations in which there are no good attributes to splits on but there are a combination of attributes that are informative.
+Another approach is to let the tree overfit and then post-prune the tree.
+Indipendently by the approach used we still need to determine a criterion to determine the correct final tree size.
+The approaches include:
+
+- Use a separate set of examples, distinct from the training examples to evaluate the utility of post-pruning.
+- use all the available data for training, but appy a statistical test to estimate wether expansing or pruning a particular node.
+- Use an explicit measure of complexity for encoding the exmaples and the decision trees.
+
+The first approach is the most common and is often referred to as a training and validation set approach.
+We first split data into training, used to form the hypotesis and validation set used to evaluate the accuracy and the impact of pruning.
+The reason behind it is while the training set may misled the algorithm, the validation set is unlikely ti exhibit the same random fluctuations.
+Using this approach is effective provided the provided data is large enough.
+When data is limited however the evaluation set reduces the already not so large training set and thus the examples available for training.
+
+<!-- ### Rule post-pruning
+
+Is a succesfull method for fining an high accuracy hypotesis.
+It is used by a variation ID3 called C4.5.
+Rule post-pruning comprises the following steps:
+
+1. Infer the decision tree from the training set until it fits well the training data, allowing it to overfit freely.
+2. Convert the learned tree into an equivalent set of rules by creating one rule for each path from root node to leaf node
+3. Prune (generalize) each rule indipendently
+4. Sort final results into desired sequence for use. -->
