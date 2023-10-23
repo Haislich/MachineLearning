@@ -89,6 +89,10 @@ This is roughly the elements needed for each slide
 - Bishop chapter 4:
   - 4.2 : Probabilistic generative models
   - 4.3 : Probabilsitic discriminative models:
+    - 4.3.1 : Fixed basis functions
+    - 4.3.2 : Logistic Regression
+    - 4.3.3 : Iterative reweighted least squares 
+    - 4.3.4 : Multiclass logistic regression 
 
 ### 07 Linear models for classification
 
